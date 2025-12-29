@@ -7,6 +7,7 @@ namespace App\Data;
 use App\Models\Product;
 use Spatie\LaravelData\Data;
 use Illuminate\Support\Number;
+use Illuminate\Support\Optional;
 use Livewire\Attributes\Computed;
 
 class ProductData extends Data
@@ -24,11 +25,12 @@ class ProductData extends Data
         public float $price,
         public ?float $weight,
         public string $cover_url,
+        public Optional|array $gallery = new Optional([]),
     ) {
         $this->price_formatted = Number::currency($this->price);
     }
 
-    public static function fromModel(Product $product): self
+    public static function fromModel(Product $product, bool $with_gallery = false): self
     {
         return new self(
             name: $product->name,
@@ -40,6 +42,7 @@ class ProductData extends Data
             price: (float) $product->price,
             weight: $product->weight ? (float) $product->weight : null,
             cover_url: $product->getFirstMediaUrl('cover'),
+            gallery: $with_gallery ? $product->getMedia('gallery')->map(fn($record) => $record->getUrl())->toArray() : new Optional([]),
         );
     }
 }
