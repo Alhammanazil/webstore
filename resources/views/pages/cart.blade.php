@@ -4,9 +4,13 @@
             <div class="md:col-span-7">
                 <h1 class="mb-5 text-2xl font-light">Shopping Bag</h1>
                 <div class="grid gap-5">
-                    @for ($i = 0; $i <= 4; $i++)
-                        <x-single-product-cart />
-                    @endfor
+                    @if ($cart->items->count() > 0)
+                        @foreach ($cart->items as $item)
+                            <x-single-product-cart :item="$item" />
+                        @endforeach
+                    @else
+                        <p class="text-gray-500">Your cart is empty</p>
+                    @endif
                 </div>
             </div>
             <div class="md:col-span-3">
@@ -15,14 +19,14 @@
                     <!-- List Group -->
                     <ul class="flex flex-col mt-3">
                         <li
-                            class="inline-flex items-center px-4 py-3 -mt-px text-sm text-gray-800 border border-gray-200 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700 dark:text-neutral-200">
+                            class="inline-flex items-center px-4 py-3 -mt-px text-sm text-gray-800 border border-gray-200 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700">
                             <div class="flex items-center justify-between w-full">
                                 <span>Sub Total</span>
-                                <span>Rp123,456</span>
+                                <span>{{ number_format($cart->total, 0, ',', '.') }}</span>
                             </div>
                         </li>
                         <li
-                            class="inline-flex items-center px-4 py-3 -mt-px text-sm text-gray-800 border border-gray-200 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700 dark:text-neutral-200">
+                            class="inline-flex items-center px-4 py-3 -mt-px text-sm text-gray-800 border border-gray-200 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700">
                             <div class="flex items-center justify-between w-full">
                                 <span>Shipping</span>
                                 <span>—</span>
@@ -32,7 +36,7 @@
                             class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 border border-gray-200 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200">
                             <div class="flex items-center justify-between w-full">
                                 <span>Total</span>
-                                <span>Rp123,456</span>
+                                <span>{{ number_format($cart->total, 0, ',', '.') }}</span>
                             </div>
                         </li>
                     </ul>

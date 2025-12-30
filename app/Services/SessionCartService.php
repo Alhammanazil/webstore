@@ -9,7 +9,7 @@ use App\Data\CartItemData;
 use App\Contract\CartServiceInterface;
 use Spatie\LaravelData\DataCollection;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class SessionCartService implements CartServiceInterface
 {

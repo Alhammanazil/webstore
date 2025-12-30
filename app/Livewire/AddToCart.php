@@ -3,14 +3,54 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use App\Data\ProductData;
+use App\Data\CartItemData;
+use App\Contract\CartServiceInterface;
 
 class AddToCart extends Component
 {
     public int $quantity = 1;
+    public string $sku;
+    public float $price;
+    public int $stock;
+    public int $weight;
 
-    public function addToCart()
+    public string $label = 'Add to Cart ';
+
+    public function mount(ProductData $product, CartServiceInterface $cart)
     {
-        dd('Add to cart: ' . $this->quantity);
+        $this->sku = $product->sku;
+        $this->price = $product->price;
+        $this->stock = $product->stock;
+        $this->weight = $product->weight;
+        $this->quantity = $cart->getItemBySku($product->sku)?->quantity ?? 1;
+
+        $this->validate();
+    }
+
+    protected function rules(): array
+    {
+        return [
+            'quantity' => "required|integer|min:1|max:{$this->stock}",
+        ];
+    }
+
+    public function addToCart(CartServiceInterface $cart)
+    {
+        $this->validate();
+        $cart->addOrUpdate(
+            new CartItemData(
+                sku: $this->sku,
+                price: $this->price,
+                quantity: $this->quantity,
+                weight: $this->weight,
+            )
+        );
+
+        session()->flash('success', 'Product added to cart successfully!');
+
+        $this->dispatch('cart-updated');
+        return redirect()->route('cart');
     }
 
     public function render()

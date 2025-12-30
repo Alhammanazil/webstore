@@ -6,18 +6,17 @@
     </div>
     <div class="flex items-center">
         <div class="py-5">
-            <h3 class="text-lg font-bold text-gray-800 dark:text-white">
+            <h3 class="text-lg font-bold text-gray-800">
                 Product Name
             </h3>
             <h2 class="text-sm text-gray-800">Ebook, Software Engineer, Web Developer</h2>
             <div class="flex items-center gap-2 my-5">
 
-                <div x-data="{ quantity: 1 }" class="flex gap-2 items-centerm y-5">
-                    <div
-                        class="inline-block px-3 py-2 bg-white border border-gray-200 rounded-lg dark:bg-neutral-900 dark:border-neutral-700">
+                <div x-data="{ quantity: 1 }" class="flex gap-2 items-center my-5">
+                    <div class="inline-block px-3 py-2 bg-white border border-gray-200 rounded-lg">
                         <div class="flex items-center gap-x-1.5">
                             <button
-                                class="inline-flex items-center justify-center text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-md cursor-pointer size-6 gap-x-2 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+                                class="inline-flex items-center justify-center text-sm font-medium text-gray-800 bg-white border border-gray-300 rounded-md cursor-pointer size-6 gap-x-2 hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
                                 @click="if(quantity > 0) quantity--">
                                 <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
                                     height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -27,14 +26,14 @@
                             </button>
                             <!-- Input jumlah -->
                             <input
-                                class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none dark:text-white"
+                                class="p-0 w-6 bg-transparent border-0 text-gray-800 text-center focus:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                 style="-moz-appearance: textfield;" type="number" x-model.number="quantity"
                                 @input="if(quantity < 0) quantity = 0" min="0">
 
 
                             <!-- Tombol tambah -->
                             <button type="button"
-                                class="inline-flex items-center justify-center text-sm font-medium text-gray-800 bg-white border border-gray-200 rounded-md cursor-pointer size-6 gap-x-2 shadow-2xs hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
+                                class="inline-flex items-center justify-center text-sm font-medium text-gray-800 bg-white border border-gray-300 rounded-md cursor-pointer size-6 gap-x-2 hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none"
                                 @click="quantity++">
                                 <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24"
                                     height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -50,8 +49,6 @@
                 <p class="px-3 py-2 mt-1 text-xl font-semibold text-black dark:text-black">
                     Rp.123.456
                 </p>
-
-
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
-<div>
-    <div class="flex items-center gap-2 my-5">
+<div class="gap-2 my-5">
+    <div class="flex items-center">
         <div x-data="{ quantity: @entangle('quantity') }" class="flex gap-2 items-centerm y-5">
             <div class="inline-block px-3 py-2 bg-white border border-gray-200 rounded-lg">
                 <div class="flex items-center gap-x-1.5">
@@ -31,9 +31,14 @@
                     </button>
                 </div>
             </div>
-            <button type="button" wire:click="addToCart"
+            <button type="button" wire:click="addToCart" wire:loading.attr="disabled" wire:target="addToCart"
                 class="inline-flex items-center justify-center w-full px-3 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg cursor-pointer gap-x-2 hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none">
-                Add To Cart
+                {{ $label }}
+                <div wire:loading wire:target="addToCart"
+                    class="animate-spin inline-block size-4 border-3 border-current border-t-transparent text-white-600 rounded-full dark:text-white-500"
+                    role="status" aria-label="loading">
+                    <span class="sr-only">Loading...</span>
+                </div>
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round">
@@ -47,5 +52,20 @@
                 </svg>
             </button>
         </div>
+    </div>
+    <div class="mt-3 space-y-2">
+        @if ($stock > 0)
+            <p class="text-sm text-green-600 font-medium">
+                ✓ In Stock ({{ $stock }} available)
+            </p>
+        @else
+            <p class="text-sm text-red-600 font-medium">
+                ✗ Out of Stock
+            </p>
+        @endif
+
+        @error('quantity')
+            <p class="text-sm text-red-600">{{ $message }}</p>
+        @enderror
     </div>
 </div>
