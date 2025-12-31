@@ -25,16 +25,9 @@ class Cart extends Component
         return $cart->all()->items->toCollection();
     }
 
-    public function checkout(CartServiceInterface $cart)
+    public function checkout()
     {
-        try {
-            ValidateCartStock::run($cart);
-
-            return redirect()->route('checkout');
-        } catch (ValidationException $e) {
-            session()->flash('error', $e->getMessage());
-            return redirect()->route('cart');
-        }
+        return redirect()->route('checkout');
     }
 
     public function render()
