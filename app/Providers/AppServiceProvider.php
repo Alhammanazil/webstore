@@ -5,9 +5,11 @@ namespace App\Providers;
 use App\Models\User;
 use Illuminate\Support\Number;
 use App\Actions\ValidateCartStock;
+use App\Services\RegionQueryService;
 use App\Services\SessionCartService;
 use Illuminate\Support\Facades\Gate;
 use App\Contract\CartServiceInterface;
+use App\Services\ShippingMethodService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Dotenv\Exception\ValidationException;
@@ -20,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(CartServiceInterface::class, SessionCartService::class);
+        $this->app->bind(RegionQueryService::class, RegionQueryService::class);
+        $this->app->bind(ShippingMethodService::class, ShippingMethodService::class);
     }
 
     /**

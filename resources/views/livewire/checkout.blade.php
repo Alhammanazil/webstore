@@ -29,7 +29,7 @@
                                 placeholder="your@email.com" required>
                             @error('data.email')
                                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                            @endError
+                            @enderror
                         </div>
 
                         {{-- Phone Number --}}
@@ -55,27 +55,48 @@
                     <div class="mt-2 space-y-3">
                         <input id="af-payment-billing-address" type="text" wire:model="data.street_address"
                             class="py-1.5 sm:py-2 px-3 pe-11 block w-full border rounded-lg focus:ring-2 transition-colors @error('data.street_address') border-red-600 focus:border-red-500 focus:ring-red-200 @else border-gray-200 focus:border-blue-500 focus:ring-blue-200 @enderror shadow-sm sm:text-sm disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                            placeholder="Street Address" required>
+                            placeholder="Street Address (House number, RT/RW, Gang, etc)" required>
                         @error('data.street_address')
-                            <p class="mt-2 text-xs text-red-600">{{ $message }}</p>
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
                         <div>
                             <div x-data="{ open: false }" class="relative w-full">
-                                <input type="text" @focus="open = true" @click.outside="open = false"
-                                    class="py-1.5 sm:py-2 px-3 pe-11 block w-full border border-gray-200 shadow-sm sm:text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                    placeholder="Cari Lokasi">
+                                <div class="relative">
+                                    <input type="text" wire:model.live.debounce.500ms="region_selector.keyword"
+                                        @focus="open = true" @click.outside="open = false"
+                                        class="py-1.5 sm:py-2 px-3 pe-11 block w-full border border-gray-200 shadow-sm sm:text-sm rounded-lg focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
+                                        placeholder="Search Location (Village/Postal Code)">
+                                    <div wire:loading wire:target="region_selector.keyword"
+                                        class="absolute right-3 top-1/2 -translate-y-1/2 animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-blue-500 rounded-full"
+                                        role="status" aria-label="loading">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
 
-                                <ul class="absolute z-10 w-full mt-1 overflow-y-auto bg-white border border-gray-200 rounded-b-lg max-h-60"
-                                    x-show="open">
-                                    <li class="p-2 cursor-pointer hover:bg-gray-100">
-                                        Cikutra, Kota Bandung
-                                    </li>
-                                </ul>
+                                @if (count($this->regions) > 0)
+                                    <ul class="absolute z-10 w-full mt-1 overflow-y-auto bg-white border border-gray-200 rounded-b-lg shadow-lg max-h-60"
+                                        x-show="open">
+                                        @foreach ($this->regions as $region)
+                                            <li class="p-2 cursor-pointer hover:bg-gray-100"
+                                                @click="open = false; $wire.set('region_selector.region_selected', {{ json_encode($region) }}); $wire.set('region_selector.keyword', '{{ $region->label }}')">
+                                                {{ $region->label }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
 
-                                <p class="mt-2 text-sm text-gray-600">
-                                    Lokasi Dipilih
-                                    <strong>Cikutra, Kota Bandung, 401900</strong>
-                                </p>
+                                @if (data_get($region_selector, 'region_selected'))
+                                    <div class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                                        <p class="text-xs text-blue-600 font-medium">Selected Location:</p>
+                                        <p class="text-sm text-blue-900">
+                                            {{ data_get($region_selector, 'region_selected.label') }}</p>
+                                    </div>
+                                @else
+                                    <p class="mt-2 text-xs text-gray-500 italic">No location selected</p>
+                                @endif
+                                @error('region_selector.region_selected')
+                                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -84,6 +105,11 @@
                 <label for="af-shipping-method" class="inline-block text-sm font-medium">
                     Shipping Method
                 </label>
+
+                @foreach ($this->shipping_methods as $shipping)
+                    {{ dd($shipping) }}
+                @endforeach
+
                 <div class="mt-2 space-y-3">
                     <div class="grid space-y-2">
                         <div class="text-xs font-bold">
@@ -162,7 +188,7 @@
                             <div class="flex items-center justify-between w-full">
                                 <span class="flex flex-col">
                                     <span>Shipping (JNT YES)</span>
-                                    <span class="text-xs">570 gram</span>
+                                    <span class="text-xs">250 gram</span>
                                 </span>
                                 <span>{{ data_get($this->summaries, 'shipping_total_formatted') }}</span>
                             </div>

@@ -4,9 +4,14 @@ namespace App\Livewire;
 
 use App\Data\CartData;
 use Livewire\Component;
+use App\Data\RegionData;
+use App\Data\ShippingData;
 use Illuminate\Support\Number;
+use App\Services\RegionQueryService;
 use Illuminate\Support\Facades\Gate;
 use App\Contract\CartServiceInterface;
+use Spatie\LaravelData\DataCollection;
+use App\Services\ShippingMethodService;
 
 class Checkout extends Component
 {
@@ -16,6 +21,11 @@ class Checkout extends Component
         'email' => null,
         'phone_number' => null,
         'street_address' => null,
+    ];
+
+    public array $region_selector = [
+        'keyword' => null,
+        'region_selected' => null,
     ];
 
     public array $summaries = [
@@ -42,6 +52,22 @@ class Checkout extends Component
             'data.email' => 'required|email|max:255',
             'data.phone_number' => 'required|regex:/^(\+?62)?[0-9]{7,13}$/|min:7|max:13',
             'data.street_address' => 'required|string|min:5|max:500',
+            'region_selector.region_selected' => 'required|array',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'region_selector.region_selected.required' => 'Location must be selected',
+            'data.full_name.required' => 'Full name is required',
+            'data.full_name.min' => 'Full name must be at least 3 characters',
+            'data.email.required' => 'Email is required',
+            'data.email.email' => 'Email format is invalid',
+            'data.phone_number.required' => 'Phone number is required',
+            'data.phone_number.regex' => 'Phone number format is invalid',
+            'data.street_address.required' => 'Street address is required',
+            'data.street_address.min' => 'Street address must be at least 5 characters',
         ];
     }
 
@@ -65,6 +91,34 @@ class Checkout extends Component
     public function getCartProperty(CartServiceInterface $cart): CartData
     {
         return $cart->all();
+    }
+
+    public function getRegionsProperty(RegionQueryService $query_service): DataCollection
+    {
+        $keyword = data_get($this->region_selector, 'keyword');
+        if (!$keyword) {
+            return new DataCollection(RegionData::class, []);
+        }
+
+        return $query_service->searchRegionByName($keyword, 20);
+    }
+
+    /** @return DataCollection<ShippingData> */
+    public function getShippingMethodsProperty(
+        RegionQueryService $region_query,
+        ShippingMethodService $shipping_service,
+    ): DataCollection {
+        if (!data_get($this->region_selector, 'region_selected.code')) {
+            return new DataCollection(ShippingData::class, []);
+        }
+
+        $origin_code = config('shipping.shipping_origin_code');
+
+        return $shipping_service->getShippingMethods(
+            $region_query->searchRegionByCode($origin_code),
+            $region_query->searchRegionByCode(data_get($this->region_selector, 'region_selected.code')),
+            $this->cart,
+        );
     }
 
     public function placeAnOrder()
