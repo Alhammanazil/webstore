@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Data;
@@ -18,20 +19,24 @@ class ShippingData extends Data
     #[Computed]
     public string $hash;
 
+    #[Computed]
+    public string $weight_formatted;
+
     public function __construct(
         public string $driver,
         public string $courier,
         public string $service,
-        public float $estimated_delivery,
+        public string $estimated_delivery,
         public float $cost,
         public int $weight, //gram
         public RegionData $origin,
         public RegionData $destination,
-        public string|null $llogo_url
+        public string|null $logo_url
     ) {
         $this->cost_formatted = Number::currency($cost);
         $courier_label = ucfirst($courier);
         $this->label = "$courier_label ($estimated_delivery)";
+        $this->weight_formatted = "{$weight} gr";
         $this->hash = md5("$origin->code-$destination->code-$driver-$courier-$service-$estimated_delivery-$cost-$weight");
     }
 }

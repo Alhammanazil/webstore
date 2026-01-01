@@ -11,6 +11,7 @@ use App\Contract\ShippingDriverInterface;
 use App\Data\CartData;
 use App\Data\RegionData;
 use App\Drivers\Shipping\OfflineShippingDriver;
+use Illuminate\Support\Facades\Cache;
 
 class ShippingMethodService
 {
@@ -49,12 +50,23 @@ class ShippingMethodService
                     ->getRate($origin, $destination, $cart, $shipping_service);
 
                 if ($shipping_data == null) {
-                    return null;
+                    return;
                 }
+
+                Cache::put(
+                    key: "shipping_data_{$shipping_data->hash}",
+                    value: $shipping_data,
+                    ttl: now()->addMinutes(15),
+                );
 
                 return $shipping_data;
             })
             ->reject(fn($item) => $item === null)
             ->pipe(fn($items) => ShippingData::collect($items, DataCollection::class));
+    }
+
+    public function getShippingMethod(string $hash): ?ShippingData
+    {
+        return Cache::get("shipping_data_{$hash}");
     }
 }

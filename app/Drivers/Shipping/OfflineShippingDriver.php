@@ -34,7 +34,7 @@ class OfflineShippingDriver implements ShippingDriverInterface
                     'driver' => $this->driver,
                     'code' => 'offline-flat-5',
                     'courier' => 'Internal Courier',
-                    'service' => 'Same Day Delivery',
+                    'service' => 'SameDay Delivery',
                 ]
             ],
             DataCollection::class
@@ -55,7 +55,7 @@ class OfflineShippingDriver implements ShippingDriverInterface
                     'driver' => $this->driver,
                     'courier' => $shipping_service->courier,
                     'service' => $shipping_service->service,
-                    'estimated_delivery' => 2,
+                    'estimated_delivery' => '1-4 Hours',
                     'cost' => 15000,
                     'weight' => $cart->total_weight,
                     'origin' => $origin,
@@ -68,7 +68,7 @@ class OfflineShippingDriver implements ShippingDriverInterface
                     'driver' => $this->driver,
                     'courier' => $shipping_service->courier,
                     'service' => $shipping_service->service,
-                    'estimated_delivery' => 1,
+                    'estimated_delivery' => '1-2 Days',
                     'cost' => 5000,
                     'weight' => $cart->total_weight,
                     'origin' => $origin,

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Contract\CartServiceInterface;
 use Spatie\LaravelData\DataCollection;
 use App\Services\ShippingMethodService;
+use Illuminate\Support\Enumerable;
 
 class Checkout extends Component
 {
@@ -21,12 +22,19 @@ class Checkout extends Component
         'email' => null,
         'phone_number' => null,
         'street_address' => null,
+        'shipping_hash' => null,
     ];
 
     public array $region_selector = [
         'keyword' => null,
         'region_selected' => null,
     ];
+
+    public array $shipping_selector = [
+        'shipping_method' => null,
+    ];
+
+    public ?string $payment_method = null;
 
     public array $summaries = [
         'subtotal' => 0,
@@ -53,6 +61,8 @@ class Checkout extends Component
             'data.phone_number' => 'required|regex:/^(\+?62)?[0-9]{7,13}$/|min:7|max:13',
             'data.street_address' => 'required|string|min:5|max:500',
             'region_selector.region_selected' => 'required|array',
+            'payment_method' => 'required|string',
+            'data.shipping_hash' => 'required',
         ];
     }
 
@@ -68,6 +78,7 @@ class Checkout extends Component
             'data.phone_number.regex' => 'Phone number format is invalid',
             'data.street_address.required' => 'Street address is required',
             'data.street_address.min' => 'Street address must be at least 5 characters',
+            'payment_method.required' => 'Payment method must be selected',
         ];
     }
 
@@ -78,7 +89,7 @@ class Checkout extends Component
         data_set($this->summaries, 'sub_total_formatted', Number::currency($this->cart->total));
 
         // For demonstration, shipping is set to 0
-        $shipping_cost = 0;
+        $shipping_cost = $this->shippingMethod?->cost ?? 0;
         data_set($this->summaries, 'shipping_total', $shipping_cost);
         data_set($this->summaries, 'shipping_total_formatted', Number::currency($shipping_cost));
 
@@ -107,7 +118,7 @@ class Checkout extends Component
     public function getShippingMethodsProperty(
         RegionQueryService $region_query,
         ShippingMethodService $shipping_service,
-    ): DataCollection {
+    ): DataCollection|Enumerable {
         if (!data_get($this->region_selector, 'region_selected.code')) {
             return new DataCollection(ShippingData::class, []);
         }
@@ -118,7 +129,34 @@ class Checkout extends Component
             $region_query->searchRegionByCode($origin_code),
             $region_query->searchRegionByCode(data_get($this->region_selector, 'region_selected.code')),
             $this->cart,
+        )->toCollection()->groupBy('service');
+    }
+
+    public function getShippingMethodProperty(ShippingMethodService $shipping_service): ?ShippingData
+    {
+        if (
+            empty(data_get($this->data, 'shipping_hash')) ||
+            empty(data_get($this->region_selector, 'region_selected.code'))
+        ) {
+            return null;
+        }
+
+        $data = $shipping_service->getShippingMethod(
+            data_get($this->data, 'shipping_hash')
         );
+
+        if ($data == null) {
+            $this->addError('shipping_hash', 'Selected shipping method is invalid.');
+            redirect()->route('checkout');
+        }
+
+        return $data;
+    }
+
+    public function updatedShippingSelectorShippingMethod($value)
+    {
+        data_set($this->data, 'shipping_hash', $value);
+        $this->calculateTotal();
     }
 
     public function placeAnOrder()
