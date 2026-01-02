@@ -202,31 +202,25 @@
                         <h2 class="text-xl font-bold text-gray-900">Payment Method</h2>
                     </div>
 
-                    <div class="grid space-y-3">
-                        @php
-                            $payment_methods = [
-                                ['id' => 'qris', 'name' => 'QRIS', 'icon' => '📱'],
-                                ['id' => 'dana', 'name' => 'Dana', 'icon' => '💳'],
-                                ['id' => 'bca', 'name' => 'Bank Transfer - BCA', 'icon' => '🏦'],
-                                ['id' => 'bni', 'name' => 'Bank Transfer - BNI', 'icon' => '🏦'],
-                                ['id' => 'va_bca', 'name' => 'Virtual Account BCA', 'icon' => '💰'],
-                            ];
-                        @endphp
-                        @foreach ($payment_methods as $key => $item)
-                            <label for="payment_method_{{ $key }}"
+                    <div class="space-y-3">
+                        @foreach ($this->payment_methods->toCollection() as $payment_method)
+                            <label for="payment_method_{{ $payment_method->hash }}"
                                 class="flex items-center gap-4 w-full p-4 text-sm bg-gradient-to-r from-gray-50 to-white border-2 border-gray-200 rounded-xl hover:border-blue-400 hover:from-blue-50 hover:to-blue-50 cursor-pointer transition-all duration-200 group">
-                                <input type="radio" name="hs-vertical-radio-in-form" wire:model="payment_method"
-                                    value="{{ $item['id'] }}"
-                                    class="w-5 h-5 border-2 border-gray-300 rounded-full text-blue-600 focus:ring-2 focus:ring-blue-300 checked:border-blue-600 cursor-pointer transition-all"
-                                    id="payment_method_{{ $key }}">
+                                <input type="radio" wire:key="payment_method_{{ $payment_method->hash }}"
+                                    wire:model.live="payment_method_selector.payment_method_selected"
+                                    value="{{ $payment_method->hash }}"
+                                    class="w-5 h-5 border-2 border-gray-300 rounded-full text-blue-600 focus:ring-2 focus:ring-blue-300 checked:border-blue-600 cursor-pointer transition-all flex-shrink-0"
+                                    id="payment_method_{{ $payment_method->hash }}">
                                 <div class="flex items-center gap-3 flex-1">
-                                    <span class="text-2xl">{{ $item['icon'] }}</span>
                                     <span
-                                        class="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{{ $item['name'] }}</span>
+                                        class="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{{ $payment_method->label }}</span>
                                 </div>
                             </label>
                         @endforeach
                     </div>
+                    @error('payment_method_selector.payment_method_selected')
+                        <p class="mt-3 text-xs text-red-600 font-medium">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 

@@ -5,24 +5,31 @@ namespace App\Livewire;
 use App\Data\CartData;
 use Livewire\Component;
 use App\Data\RegionData;
+use App\Data\CheckoutData;
+use App\Data\CustomerData;
 use App\Data\ShippingData;
 use Illuminate\Support\Number;
+use Psy\VersionUpdater\Checker;
+use Illuminate\Support\Enumerable;
 use App\Services\RegionQueryService;
 use Illuminate\Support\Facades\Gate;
+use App\Rules\ValidPaymentMethodHash;
 use App\Contract\CartServiceInterface;
 use Spatie\LaravelData\DataCollection;
 use App\Services\ShippingMethodService;
-use Illuminate\Support\Enumerable;
+use App\Services\PaymentMethodQueryService;
 
 class Checkout extends Component
 {
-
     public array $data = [
         'full_name' => null,
         'email' => null,
         'phone_number' => null,
         'street_address' => null,
+        'region_label' => null,
+        'region_code' => null,
         'shipping_hash' => null,
+        'payment_method_hash' => null,
     ];
 
     public array $region_selector = [
@@ -34,7 +41,9 @@ class Checkout extends Component
         'shipping_method' => null,
     ];
 
-    public ?string $payment_method = null;
+    public array $payment_method_selector = [
+        'payment_method_selected' => null,
+    ];
 
     public array $summaries = [
         'subtotal' => 0,
@@ -50,6 +59,11 @@ class Checkout extends Component
         if (!Gate::inspect('is_stock_avaliable')->allowed()) {
             return redirect()->route('cart');
         }
+
+        if ($this->cart->total_quantity <= 0) {
+            return redirect()->route('cart');
+        }
+
         $this->calculateTotal();
     }
 
@@ -61,8 +75,9 @@ class Checkout extends Component
             'data.phone_number' => 'required|regex:/^(\+?62)?[0-9]{7,13}$/|min:7|max:13',
             'data.street_address' => 'required|string|min:5|max:500',
             'region_selector.region_selected' => 'required|array',
-            'payment_method' => 'required|string',
+            'payment_method_selector.payment_method_selected' => 'required|string',
             'data.shipping_hash' => 'required',
+            'data.payment_method_hash' => ['required', new ValidPaymentMethodHash()]
         ];
     }
 
@@ -78,7 +93,7 @@ class Checkout extends Component
             'data.phone_number.regex' => 'Phone number format is invalid',
             'data.street_address.required' => 'Street address is required',
             'data.street_address.min' => 'Street address must be at least 5 characters',
-            'payment_method.required' => 'Payment method must be selected',
+            'payment_method_selector.payment_method_selected.required' => 'Payment method must be selected',
         ];
     }
 
@@ -159,11 +174,54 @@ class Checkout extends Component
         $this->calculateTotal();
     }
 
+    public function updatedRegionSelectorRegionSelected($value): void
+    {
+        // Persist selected region detail into the request payload
+        data_set($this->data, 'region_label', data_get($value, 'label'));
+        data_set($this->data, 'region_code', data_get($value, 'code'));
+
+        // Reset shipping choice when region changes
+        data_set($this->shipping_selector, 'shipping_method', null);
+        data_set($this->data, 'shipping_hash', null);
+        $this->calculateTotal();
+    }
+
+    public function getPaymentMethodsProperty(
+        PaymentMethodQueryService $query_service,
+    ): DataCollection {
+        return $query_service->getPaymentMethods();
+    }
+
+    public function updatedPaymentMethodSelectorPaymentMethodSelected($value)
+    {
+        data_set($this->data, 'payment_method_hash', $value);
+    }
+
     public function placeAnOrder()
     {
-        $this->validate();
+        $validated = $this->validate();
+        $shipping_method = app(ShippingMethodService::class)->getShippingMethod(
+            data_get($validated, 'data.shipping_hash')
+        );
+        $payment_method = app(PaymentMethodQueryService::class)->getPaymentMethodByHash(
+            data_get($validated, 'data.payment_method_hash')
+        );
 
-        dd($this->data);
+        $checkout = CheckoutData::from([
+            'customer' => CustomerData::from([
+                'full_name' => data_get($validated, 'data.full_name'),
+                'email' => data_get($validated, 'data.email'),
+                'phone_number' => data_get($validated, 'data.phone_number'),
+            ]),
+            'address_line' => data_get($validated, 'data.street_address'),
+            'origin' => $shipping_method->origin,
+            'destination' => $shipping_method->destination,
+            'cart' => $this->cart,
+            'shipping' => $shipping_method,
+            'payment' => $payment_method,
+        ]);
+
+        dd($checkout);
     }
 
     public function render()
