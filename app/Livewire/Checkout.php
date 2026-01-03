@@ -15,6 +15,7 @@ use App\Services\RegionQueryService;
 use Illuminate\Support\Facades\Gate;
 use App\Rules\ValidPaymentMethodHash;
 use App\Contract\CartServiceInterface;
+use App\Services\CheckoutService;
 use Spatie\LaravelData\DataCollection;
 use App\Services\ShippingMethodService;
 use App\Services\PaymentMethodQueryService;
@@ -197,8 +198,9 @@ class Checkout extends Component
         data_set($this->data, 'payment_method_hash', $value);
     }
 
-    public function placeAnOrder()
-    {
+    public function placeAnOrder(
+        CartServiceInterface $cart
+    ) {
         $validated = $this->validate();
         $shipping_method = app(ShippingMethodService::class)->getShippingMethod(
             data_get($validated, 'data.shipping_hash')
@@ -221,7 +223,11 @@ class Checkout extends Component
             'payment' => $payment_method,
         ]);
 
-        dd($checkout);
+        $service = app(CheckoutService::class);
+        $sales_order = $service->makeAnOrder($checkout);
+        $cart->clear();
+
+        return redirect()->route('order-confirmed', $sales_order->trx_id);
     }
 
     public function render()
