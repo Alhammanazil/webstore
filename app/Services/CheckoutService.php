@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use App\Data\SalesOrderData;
 use App\States\SalesOrder\Pending;
 use Illuminate\Support\Facades\DB;
+use App\Events\SalesOrderCreatedEvent;
 
 class CheckoutService
 {
@@ -100,6 +101,11 @@ class CheckoutService
             return $sales_order;
         });
 
-        return SalesOrderData::fromModel($sales_order);
+        $data = SalesOrderData::fromModel($sales_order);
+
+        // Dispatch event with normalized data to satisfy listener signature
+        event(new SalesOrderCreatedEvent($data));
+
+        return $data;
     }
 }

@@ -5,25 +5,30 @@ declare(strict_types=1);
 namespace App\States\SalesOrder\Transitions;
 
 use App\Models\SalesOrder;
+use App\Data\SalesOrderData;
 use Spatie\ModelStates\Transition;
 use App\States\SalesOrder\Progress;
 use App\States\SalesOrder\Completed;
+use App\Events\SalesOrderCompletedEvent;
 
 class ProgressToCompleted extends Transition
 {
-    private SalesOrder $salesOrder;
-
-    public function __construct(SalesOrder $salesOrder)
+    public function __construct(
+        private SalesOrder $sales_order)
     {
-        $this->salesOrder = $salesOrder;
+        $this->sales_order = $sales_order;
     }
 
     public function handle()
     {
-        $this->salesOrder->update([
+        $this->sales_order->update([
             'status' => Completed::class,
         ]);
 
-        return $this->salesOrder;
+        event(new SalesOrderCompletedEvent(
+            SalesOrderData::fromModel($this->sales_order)
+        ));
+
+        return $this->sales_order;
     }
 }

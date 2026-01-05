@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Drivers\Payment;
 
 use App\Data\PaymentData;
+use App\Models\SalesOrder;
 use App\Data\SalesOrderData;
 use Spatie\LaravelData\DataCollection;
 use App\Contract\PaymentDriverInterface;
@@ -36,12 +37,15 @@ class OfflinePaymentDriver implements PaymentDriverInterface
 
     public function process(SalesOrderData $sales_order)
     {
-        // For offline payment, no processing is needed
-        // Payment will be verified manually
-        return true;
+        SalesOrder::where('trx_id', $sales_order->trx_id)
+            ->update([
+                'payment_payload' => [
+                    'key' => 'value',
+                ],
+            ]);
     }
 
-    public function shouldShowPayNowButton( SalesOrderData $sales_order): bool
+    public function shouldShowPayNowButton(SalesOrderData $sales_order): bool
     {
         // Offline payment doesn't need a "Pay Now" button
         return false;
