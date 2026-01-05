@@ -11,6 +11,7 @@ use App\Data\CheckoutData;
 use App\Models\SalesOrder;
 use Illuminate\Support\Str;
 use App\Data\SalesOrderData;
+use App\States\SalesOrder\Pending;
 use Illuminate\Support\Facades\DB;
 
 class CheckoutService
@@ -22,7 +23,7 @@ class CheckoutService
             $random = strtoupper(Str::random(5));
             $sales_order = SalesOrder::query()->create([
                 'trx_id' => "TRX-{$date}-{$random}",
-                'status' => 'PENDING',
+                'status' => Pending::class,
                 'customer_full_name' => $checkout_data->customer->full_name,
                 'customer_email' => $checkout_data->customer->email,
                 'customer_phone' => $checkout_data->customer->phone_number,

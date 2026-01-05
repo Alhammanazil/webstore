@@ -49,7 +49,7 @@
                                     class="text-red-600">*</span></label>
                             <input type="tel" wire:model="data.phone_number"
                                 class="w-full px-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none @error('data.phone_number') border-red-600 focus:border-red-500 focus:ring-2 focus:ring-red-200 @else border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 @enderror shadow-sm"
-                                placeholder="+62 812 3456 7890" required>
+                                placeholder="+62 812-3456-7890" required>
                             @error('data.phone_number')
                                 <p class="mt-1 text-xs text-red-600 font-medium">{{ $message }}</p>
                             @enderror
