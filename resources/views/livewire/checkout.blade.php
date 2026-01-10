@@ -256,11 +256,6 @@
                             </div>
                             <div class="flex items-center gap-2">
                                 <div wire:loading wire:target="shipping_selector.shipping_method"
-                                    class="animate-spin inline-block w-3 h-3 border-[2px] border-current border-t-transparent text-blue-500 rounded-full"
-                                    role="status" aria-label="loading">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                                <div wire:loading wire:target="shipping_selector.shipping_method"
                                     class="animate-spin inline-block w-4 h-4 border-[3px] border-current border-t-transparent text-black rounded-full"
                                     role="status" aria-label="loading">
                                     <span class="sr-only">Loading...</span>
