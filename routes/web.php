@@ -13,6 +13,7 @@ use App\Mail\SalesOrderCompletedMail;
 use Illuminate\Support\Facades\Route;
 use App\Mail\SalesOrderProgressedMail;
 use App\Http\Controllers\ProductController;
+use App\Livewire\PageStatic;
 use App\Mail\ShippingReceiptNumberUpdatedMail;
 
 Route::get('/', HomePage::class)->name('home');
@@ -21,7 +22,9 @@ Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name(
 Route::get('/cart', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->name('checkout');
 Route::get('/order-confirmed/{trx_id?}', SalesOrderDetail::class)->name('order-confirmed');
-Route::view('/page', 'pages.page')->name('page');
+Route::get('/page/{page:slug?}', PageStatic::class)->name('page');
+
+Route::webhooks('moota/callback');
 
 Route::get('/mailable', function () {
     return new ShippingReceiptNumberUpdatedMail(

@@ -113,6 +113,14 @@
                                         <span>{{ $order->payment->label }}</span>
                                     </div>
                                 </li>
+                                {{-- status --}}
+                                <li
+                                    class="inline-flex items-center px-4 py-3 -mt-px text-sm text-gray-800 border border-gray-200 gap-x-2 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:border-neutral-700 dark:text-neutral-200">
+                                    <div class="flex items-center justify-between w-full">
+                                        <span>Status</span>
+                                        <span>{{ $order->status_label }}</span>
+                                    </div>
+                                </li>
                                 <li
                                     class="inline-flex items-center px-4 py-3 -mt-px text-sm font-semibold text-gray-800 border border-gray-200 gap-x-2 bg-gray-50 first:rounded-t-lg first:mt-0 last:rounded-b-lg dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200">
                                     <div class="flex items-center justify-between w-full">
@@ -137,7 +145,7 @@
                         <p class="text-sm text-gray-500 dark:text-neutral-500">Please Transfer Until Last 3 Digits</p>
                     </div>
 
-                    @if ($order)
+                    @if ($order->status == 'App\States\SalesOrder\Pending')
                         @if ($is_redirected)
                             <!-- Button -->
                             <a href="{{ $redirect_url }}"
