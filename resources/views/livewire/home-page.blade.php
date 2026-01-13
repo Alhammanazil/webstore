@@ -7,12 +7,12 @@
                 <!-- Left Content -->
                 <div class="text-white animate-fade-in-left">
                     <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl mb-6">
-                        Discover Amazing
-                        <span class="block text-yellow-300">Learning Products</span>
+                        Discover Exceptional
+                        <span class="block text-yellow-300">Products & Essentials</span>
                     </h1>
                     <p class="text-lg sm:text-xl mb-8 text-gray-100">
-                        Elevate your skills with our curated collection of premium courses and e-books. Start your
-                        learning journey today!
+                        Explore premium courses, books, and everyday essentials carefully curated to elevate your
+                        productivity and lifestyle.
                     </p>
                     <div class="flex flex-wrap gap-4">
                         <a href="{{ route('product-catalog') }}"

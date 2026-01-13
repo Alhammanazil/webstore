@@ -6,7 +6,7 @@
                     <div class="space-y-3">
                         <label for="search-input" class="block text-sm font-medium text-gray-700 sr-only">Search
                             products</label>
-                        <input id="search-input" type="text" placeholder="Search" wire:model.blur="search"
+                        <input id="search-input" type="text" placeholder="Search" wire:model.live.debounce.500ms="search"
                             class="py-2.5 sm:py-3 px-4 block w-full border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none"
                             aria-label="Search products by name">
                         @error('search')

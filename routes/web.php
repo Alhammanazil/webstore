@@ -22,7 +22,12 @@ Route::get('/product/{product:slug}', [ProductController::class, 'show'])->name(
 Route::get('/cart', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->name('checkout');
 Route::get('/order-confirmed/{trx_id?}', SalesOrderDetail::class)->name('order-confirmed');
-Route::get('/page/{page:slug?}', PageStatic::class)->name('page');
+Route::get('/page/{page:slug}', PageStatic::class)->name('page');
+
+// Shortcut routes for common static pages
+Route::redirect('/terms', '/page/terms-and-conditions')->name('terms');
+Route::redirect('/privacy', '/page/privacy-policy')->name('privacy');
+Route::redirect('/customers', '/page/customers')->name('customers');
 
 Route::webhooks('moota/callback');
 

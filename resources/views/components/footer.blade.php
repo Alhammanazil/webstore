@@ -5,12 +5,10 @@
         <div class="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-3">
             <div class="col-span-full lg:col-span-1">
                 <a class="flex-none text-xl font-semibold text-white focus:outline-hidden focus:opacity-80" href="#"
-                    aria-label="Brand">Brand</a>
+                    aria-label="Webstore">Webstore</a>
                 <div class="my-5 text-gray-500 ">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores mollitia distinctio,
-                    doloribus,
-                    molestias numquam voluptatibus explicabo vel deserunt voluptates, quod minus itaque dolore in
-                    obcaecati? Quis laborum autem tempora porro?
+                    Your trusted hub for curated digital courses, books, and everyday essentials—delivered with
+                    reliable shipping and secure payments.
                 </div>
             </div>
             <!-- End Col -->
@@ -61,11 +59,11 @@
 
                 <div class="grid mt-3 space-y-3">
                     <p><a class="inline-flex text-gray-400 gap-x-2 hover:text-gray-200 focus:outline-hidden focus:text-gray-200 dark:text-neutral-400 dark:hover:text-neutral-200 dark:focus:text-neutral-200"
-                            href="{{ route('page') }}">Term & Conditions</a></p>
+                            href="{{ route('terms') }}">Term & Conditions</a></p>
                     <p><a class="inline-flex text-gray-400 gap-x-2 hover:text-gray-200 focus:outline-hidden focus:text-gray-200 dark:text-neutral-400 dark:hover:text-neutral-200 dark:focus:text-neutral-200"
-                            href="{{ route('page') }}">Privacy</a></p>
+                            href="{{ route('privacy') }}">Privacy</a></p>
                     <p><a class="inline-flex text-gray-400 gap-x-2 hover:text-gray-200 focus:outline-hidden focus:text-gray-200 dark:text-neutral-400 dark:hover:text-neutral-200 dark:focus:text-neutral-200"
-                            href="{{ route('page') }}">Customers</a></p>
+                            href="{{ route('customers') }}">Customers</a></p>
                 </div>
             </div>
             <!-- End Col -->
@@ -74,7 +72,7 @@
 
         <div class="flex justify-center mt-5 sm:mt-12 gap-y-2 sm:gap-y-0">
             <p class="text-sm text-gray-400 dark:text-neutral-400">
-                © 2025 {{ config('app.name') }}
+                © 2026 {{ config('app.name') }}
             </p>
 
         </div>
