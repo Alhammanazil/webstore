@@ -33,7 +33,7 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "false",
+        "APP_DEBUG": "true",
         "APP_URL": "https://webstore-sandy.vercel.app",
         "APP_KEY": "base64:0/Qk74ZOIjJd39rxS4GIjvs2xo8g8ycOKC/1ZY0NViw=",
         "DB_CONNECTION": "mysql",
