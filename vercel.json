@@ -2,11 +2,12 @@
     "version": 2,
     "builds": [
         {
+            "src": "public/build/**",
+            "use": "@vercel/static"
+        },
+        {
             "src": "api/index.php",
-            "use": "vercel-php@0.7.1",
-            "config": {
-                "document_root": "public"
-            }
+            "use": "vercel-php@0.7.1"
         }
     ],
     "routes": [
@@ -15,16 +16,8 @@
             "dest": "/public/build/$1"
         },
         {
-            "src": "/css/(.*)",
-            "dest": "/public/css/$1"
-        },
-        {
-            "src": "/js/(.*)",
-            "dest": "/public/js/$1"
-        },
-        {
-            "src": "/images/(.*)",
-            "dest": "/public/images/$1"
+            "src": "/(css|js|images|apple-touch-icon\\.png|favicon.*\\.png|site\\.webmanifest|robots\\.txt)",
+            "dest": "/public/$1"
         },
         {
             "src": "/(.*)",
