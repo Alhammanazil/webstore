@@ -1,8 +1,0 @@
-/vendor
-.git
-.env
-.env.local
-node_modules
-/storage/logs
-/tests
-.phpunit.result.cache
