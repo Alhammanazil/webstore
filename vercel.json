@@ -27,7 +27,7 @@
     "env": {
         "APP_ENV": "production",
         "APP_DEBUG": "true",
-        "APP_URL": "",
+        "APP_URL": "https://webstore-mxpqghyy3-alhammanazils-projects.vercel.app",
         "APP_KEY": "base64:0/Qk74ZOIjJd39rxS4GIjvs2xo8g8ycOKC/1ZY0NViw=",
         "DB_CONNECTION": "mysql",
         "DB_HOST": "igv87a.h.filess.io",
