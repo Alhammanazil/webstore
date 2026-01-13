@@ -33,6 +33,8 @@
         "DB_DATABASE": "webstore_quicklydue",
         "DB_USERNAME": "webstore_quicklydue",
         "DB_PASSWORD": "de768079e23ce414b136d960cada1074a230513d",
+        "DB_PERSISTENT": "false",
+        "QUEUE_CONNECTION": "sync",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
