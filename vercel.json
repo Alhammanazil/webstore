@@ -1,0 +1,36 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "api/index.php",
+            "use": "vercel-php@0.7.1"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.php"
+        }
+    ],
+    "env": {
+        "APP_ENV": "production",
+        "APP_DEBUG": "false",
+        "APP_URL": "https://webstore-sandy.vercel.app",
+        "APP_KEY": "base64:0/Qk74ZOIjJd39rxS4GIjvs2xo8g8ycOKC/1ZY0NViw=",
+        "DB_CONNECTION": "mysql",
+        "DB_HOST": "igv87a.h.filess.io",
+        "DB_PORT": "3307",
+        "DB_DATABASE": "webstore_quicklydue",
+        "DB_USERNAME": "webstore_quicklydue",
+        "DB_PASSWORD": "de768079e23ce414b136d960cada1074a230513d",
+        "APP_CONFIG_CACHE": "/tmp/config.php",
+        "APP_EVENTS_CACHE": "/tmp/events.php",
+        "APP_PACKAGES_CACHE": "/tmp/packages.php",
+        "APP_ROUTES_CACHE": "/tmp/routes.php",
+        "APP_SERVICES_CACHE": "/tmp/services.php",
+        "VIEW_COMPILED_PATH": "/tmp",
+        "CACHE_DRIVER": "array",
+        "LOG_CHANNEL": "stderr",
+        "SESSION_DRIVER": "cookie"
+    }
+}
